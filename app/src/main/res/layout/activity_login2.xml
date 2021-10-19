@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login"
+    tools:context=".LoginActivity2">
+
+    <ImageView
+        android:id="@+id/LoginAppLogo"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="250dp"
+        android:src="@drawable/applogo" />
+
+    <EditText
+        android:id="@+id/LoginPhoneNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LoginAppLogo"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/input_design"
+        android:hint="@string/phone_number"
+        android:inputType="number"
+        android:padding="20dp"
+        android:textAllCaps="false"
+        android:textColor="@color/purple_200"
+        android:textColorHint="@color/purple_200"
+        android:textSize="18sp"
+        android:textStyle="bold||italic"
+
+        tools:ignore="TextFields" />
+
+    <EditText
+        android:id="@+id/LoginPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LoginPhoneNo"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/input_design"
+        android:hint="@string/password"
+        android:padding="20dp"
+        android:textAllCaps="false"
+        android:textColor="@color/purple_200"
+        android:textColorHint="@color/purple_200"
+        android:textSize="18sp"
+        android:textStyle="bold||italic"
+        />
+    <LinearLayout
+        android:id="@+id/Linear1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LoginPassword"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</RelativeLayout>

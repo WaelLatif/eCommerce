@@ -3,4 +3,6 @@
     <string name="slogan">Reveal Your Outermost Glow</string>
     <string name="Login">Already a family member ? Login</string>
     <string name="register">Join the family</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="password">Password</string>
 </resources>

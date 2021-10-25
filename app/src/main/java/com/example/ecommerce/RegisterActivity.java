@@ -69,19 +69,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void validatePhoneNumber(String name, String phone, String password) {
         final DatabaseReference RootRef;
-
         RootRef = FirebaseDatabase.getInstance().getReference();
 
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!(snapshot.child("User").child(phone).exists())) {
+                if (!(snapshot.child("Users").child(phone).exists())) {
                     HashMap<String, Object> userDataMap = new HashMap<>();
                     userDataMap.put("Phone",phone);
                     userDataMap.put("Password",password);
                     userDataMap.put("Name",name);
 
-                    RootRef.child("User").child(phone).updateChildren(userDataMap)
+                    RootRef.child("Users").child(phone).updateChildren(userDataMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -106,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(RegisterActivity.this, "Error, please try again", Toast.LENGTH_SHORT).show();
             }
         });
     }

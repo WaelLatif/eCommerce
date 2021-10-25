@@ -42,6 +42,7 @@
         android:layout_marginRight="15dp"
         android:background="@drawable/input_design"
         android:hint="@string/password"
+        android:inputType="textPassword"
         android:padding="20dp"
         android:textAllCaps="false"
         android:textColor="@color/purple_200"

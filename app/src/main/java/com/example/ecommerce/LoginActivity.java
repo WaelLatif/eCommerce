@@ -10,10 +10,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommerce.Model.Users;
 import com.example.ecommerce.Prevalent.Prevalent;
+import com.google.android.material.transition.VisibilityAnimatorProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputNumber, inputPassword;
     private Button loginButton;
     private ProgressDialog loadingBar;
-
+    private TextView adminLink, notAdminlink;
     private String parentDbName = "Users";
     private CheckBox checkBoxRememberMe;
 
@@ -40,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.LoginBtn);
         inputNumber = findViewById(R.id.LoginPhoneNo);
         inputPassword = findViewById(R.id.LoginPassword);
+        adminLink = findViewById(R.id.adminPanel);
+        notAdminlink = findViewById(R.id.notAdminPanel);
+
         loadingBar = new ProgressDialog(this);
         checkBoxRememberMe = findViewById(R.id.loginRememberMe);
         Paper.init(this);
@@ -50,11 +55,31 @@ public class LoginActivity extends AppCompatActivity {
                 LoginUser();
             }
         });
+        adminLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginButton.setText("Login Admin");
+                adminLink.setVisibility(View.INVISIBLE);
+                notAdminlink.setVisibility(View.VISIBLE);
+                parentDbName = "Admins";
+
+            }
+        });
+        notAdminlink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginButton.setText("Login");
+                adminLink.setVisibility(View.VISIBLE);
+                notAdminlink.setVisibility(View.INVISIBLE);
+                parentDbName = "Users";
+            }
+        });
     }
 
     private void LoginUser() {
         String phone = inputNumber.getText().toString();
         String password = inputPassword.getText().toString();
+
 
         if (TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Please fill all data...", Toast.LENGTH_SHORT).show();
@@ -64,14 +89,14 @@ public class LoginActivity extends AppCompatActivity {
         loadingBar.setCanceledOnTouchOutside(false);
         loadingBar.show();
 
-        AllowAccessToAccount(phone, password);
+        AllowAccessToAccount(phone, password, parentDbName);
     }
 
-    private void AllowAccessToAccount(String phone, String password) {
-        if (checkBoxRememberMe.isChecked()){
-            Paper.book().write(Prevalent.UserPhoneKey,phone);
-            Paper.book().write(Prevalent.UserPasswordKey,password);
-
+    private void AllowAccessToAccount(String phone, String password, String parentDbName) {
+        if (checkBoxRememberMe.isChecked()) {
+            Paper.book().write(Prevalent.UserPhoneKey, phone);
+            Paper.book().write(Prevalent.UserPasswordKey, password);
+            Paper.book().write(Prevalent.userAdmin, parentDbName);
         }
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
@@ -82,10 +107,19 @@ public class LoginActivity extends AppCompatActivity {
                     Users usersData = snapshot.child(parentDbName).child(phone).getValue(Users.class);
                     if (usersData.getPhone().equals(phone)) {
                         if (usersData.getPassword().equals(password)) {
-                            Toast.makeText(LoginActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
-                            Intent in = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(in);
+                            if (parentDbName.equals("Admins")) {
+
+                                Toast.makeText(LoginActivity.this, "Welcome Admin ...", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                                Intent in = new Intent(LoginActivity.this, AdminCategoryActivity.class);
+                                startActivity(in);
+                            } else if (parentDbName.equals("Users")) {
+
+                                Toast.makeText(LoginActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                                Intent in = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(in);
+                            }
                         } else {
                             Toast.makeText(LoginActivity.this, "Wrong username Or password ...", Toast.LENGTH_SHORT).show();
                             loadingBar.dismiss();

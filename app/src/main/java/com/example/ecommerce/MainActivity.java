@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loginBtn= findViewById(R.id.mainLoginBtn);
-        registerBtn=findViewById(R.id.mainRegisterBtn);
+        loginBtn = findViewById(R.id.mainLoginBtn);
+        registerBtn = findViewById(R.id.mainRegisterBtn);
         loadingBar = new ProgressDialog(this);
 
         Paper.init(this);
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MainActivity.this,LoginActivity.class);
+                Intent in = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(in);
             }
         });
@@ -45,16 +45,17 @@ public class MainActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(MainActivity.this,RegisterActivity.class);
+                Intent in = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivity(in);
             }
         });
         String UserPhoneKey = Paper.book().read(Prevalent.UserPhoneKey);
         String UserPasswordKey = Paper.book().read(Prevalent.UserPasswordKey);
+        String parentDbName = Paper.book().read(Prevalent.userAdmin);
 
-        if(UserPhoneKey != null && UserPasswordKey != null){
-            if(!UserPhoneKey.isEmpty() && !UserPasswordKey.isEmpty()){
-                AllowAccess(UserPhoneKey, UserPasswordKey );
+        if (UserPhoneKey != null && UserPasswordKey != null) {
+            if (!UserPhoneKey.isEmpty() && !UserPasswordKey.isEmpty()) {
+                AllowAccess(UserPhoneKey, UserPasswordKey, parentDbName);
                 loadingBar.setTitle("Already Logged in");
                 loadingBar.setMessage("please wait...");
                 loadingBar.setCanceledOnTouchOutside(false);
@@ -63,24 +64,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void AllowAccess(String phone , String password) {
+    private void AllowAccess(String phone, String password, String parentDbName) {
 
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child("Users").child(phone).exists()) {
-                    Users usersData = snapshot.child("Users").child(phone).getValue(Users.class);
+                if (snapshot.child(parentDbName).child(phone).exists()) {
+                    Users usersData = snapshot.child(parentDbName).child(phone).getValue(Users.class);
                     if (usersData.getPhone().equals(phone)) {
                         if (usersData.getPassword().equals(password)) {
-                            Toast.makeText(MainActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
-                            Intent in = new Intent(MainActivity.this, HomeActivity.class);
-                            startActivity(in);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Wrong username Or password ...", Toast.LENGTH_SHORT).show();
-                            loadingBar.dismiss();
+                            if (parentDbName.equals("Admins")) {
+
+                                Toast.makeText(MainActivity.this, "Welcome Admin ...", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                                Intent in = new Intent(MainActivity.this, AdminCategoryActivity.class);
+                                startActivity(in);
+                            } else if (parentDbName.equals("Users")) {
+
+                                Toast.makeText(MainActivity.this, "Logged in Successfully...", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                                Intent in = new Intent(MainActivity.this, HomeActivity.class);
+                                startActivity(in);
+                            }
                         }
                     }
                 } else {

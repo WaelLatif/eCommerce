@@ -97,19 +97,20 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp" />
+
     <TextView
         android:id="@+id/adminPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/LoginBtn"
+        android:layout_alignParentEnd="true"
         android:layout_marginStart="110dp"
         android:layout_marginTop="5dp"
-        android:layout_alignParentEnd="true"
-        android:textSize="17sp"
-        android:text="I'm Admin! "
-        android:layout_below="@+id/LoginBtn"
+        android:layout_marginEnd="23dp"
+        android:text="I'm Admin ! "
         android:textColor="@color/purple_200"
-        android:textStyle="bold"
-        android:layout_marginEnd="23dp"/>
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/notAdminPanel"
